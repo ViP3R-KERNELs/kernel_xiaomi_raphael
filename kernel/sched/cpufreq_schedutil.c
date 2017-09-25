@@ -1127,6 +1127,28 @@ static struct attribute *sugov_attributes[] = {
 	NULL
 };
 
+static void sugov_tunables_save(struct cpufreq_policy *policy,
+		struct sugov_tunables *tunables)
+{
+	int cpu;
+	struct sugov_tunables *cached = per_cpu(cached_tunables, policy->cpu);
+
+	if (!have_governor_per_policy())
+		return;
+
+	if (!cached) {
+		cached = kzalloc(sizeof(*tunables), GFP_KERNEL);
+		if (!cached)
+			return;
+
+		for_each_cpu(cpu, policy->related_cpus)
+			per_cpu(cached_tunables, cpu) = cached;
+	}
+
+	cached->up_rate_limit_us = tunables->up_rate_limit_us;
+	cached->down_rate_limit_us = tunables->down_rate_limit_us;
+}
+
 static void sugov_tunables_free(struct kobject *kobj)
 {
 	struct gov_attr_set *attr_set = container_of(kobj, struct gov_attr_set, kobj);
@@ -1382,6 +1404,8 @@ static int sugov_init(struct cpufreq_policy *policy)
 	sg_policy->rtg_boost_util = util;
 
 	stale_ns = sched_ravg_window + (sched_ravg_window >> 3);
+
+	sugov_tunables_restore(policy);
 
 	sugov_tunables_restore(policy);
 
