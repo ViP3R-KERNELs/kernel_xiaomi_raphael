@@ -92,6 +92,7 @@
 			linux,can-disable;
 		};
 	};
+};
 
 	qcom,qbt1000 {
 		compatible = "qcom,qbt1000";
@@ -108,6 +109,11 @@
 		qcom,supply-min-voltage = <1800000>;
 		qcom,supply-max-voltage = <1800000>;
 	};
+};
+
+&snd_934x {
+	qcom,model = "sm8150-tavil-cdp-snd-card";
+	qcom,us-euro-gpios = <&tavil_us_euro_switch>;
 };
 
 &dsi_sharp_4k_dsc_cmd {
