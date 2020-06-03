@@ -134,6 +134,7 @@ static unsigned long zero_ul;
 static unsigned long one_ul = 1;
 static unsigned long long_max = LONG_MAX;
 static int one_hundred = 100;
+static int two_hundred = 200;
 static int one_thousand = 1000;
 
 #ifdef CONFIG_SCHED_WALT
@@ -1623,7 +1624,7 @@ static struct ctl_table vm_table[] = {
 #ifdef CONFIG_INCREASE_MAXIMUM_SWAPPINESS
 		.extra2         = &max_swappiness,
 #else
-		.extra2		= &one_hundred,
+		.extra2		= &two_hundred,
 #endif
 	},
 	{
