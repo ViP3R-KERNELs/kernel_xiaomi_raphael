@@ -1851,7 +1851,7 @@ static int do_execveat_common(int fd, struct filename *filename,
 		bprm->argc = 1;
 	}
 
-	retval = exec_binprm(&bprm);
+	retval = exec_binprm(bprm);
 	if (retval < 0)
 		goto out;
 
