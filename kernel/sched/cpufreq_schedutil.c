@@ -210,7 +210,7 @@ static inline int match_nearest_efficient_step(int freq, int maxstep, int *freq_
 extern int kp_active_mode(void);
 static inline void do_freq_limit(struct sugov_policy *sg_policy, unsigned int *freq, u64 time)
 {
-	if (kp_active_mode() == 3)
+	if (kp_active_mode() == 3 || kp_active_mode() == 0)
 	{
 		if(sg_policy->tunables->limit_freq && !sg_policy->tunables->limit_freq_userspace_ctl)
 			sg_policy->tunables->limit_freq = false;
