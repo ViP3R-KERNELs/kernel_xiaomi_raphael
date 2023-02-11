@@ -42,10 +42,10 @@ static int __init audio_q6_init(void)
 static void __exit audio_q6_exit(void)
 {
 	msm_mdf_exit();
+	avtimer_exit();
 #ifdef CONFIG_MSM_CSPL
 	crus_sp_exit();
 #endif
-	avtimer_exit();
 	audio_slimslave_exit();
 	msm_audio_ion_exit();
 	core_exit();

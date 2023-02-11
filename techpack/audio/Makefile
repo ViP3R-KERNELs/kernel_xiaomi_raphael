@@ -1,4 +1,3 @@
-# auto-detect subdirs
 # Use USERINCLUDE when you must reference the UAPI directories only.
 USERINCLUDE     += \
                 -I$(srctree)/techpack/audio/include/uapi \

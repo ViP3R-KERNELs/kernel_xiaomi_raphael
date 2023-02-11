@@ -683,7 +683,6 @@ static ssize_t tfa98xx_dbgfs_fw_state_get(struct file *file,
 	return simple_read_from_buffer(user_buf, count, ppos, str, strlen(str));
 }
 
-extern int send_tfa_cal_apr(void *buf, int cmd_size, bool bRead);
 
 static ssize_t tfa98xx_dbgfs_rpc_read(struct file *file,
 	char __user *user_buf, size_t count,
@@ -3296,7 +3295,6 @@ static int tfa98xx_misc_device_rpc_open(struct inode *inode, struct file *file)
 	}
 }
 
-extern int send_tfa_cal_apr(void *buf, int cmd_size, bool bRead);
 
 static ssize_t tfa98xx_misc_device_rpc_read(struct file *file, char __user *user_buf,
 											size_t count, loff_t *ppos)
@@ -3813,7 +3811,6 @@ static int tfa98xx_i2c_probe(struct i2c_client *i2c,
 		if (ret)
 			return ret;
 	}
-
 
 	/* Power up! */
 	tfa98xx_ext_reset(tfa98xx);
