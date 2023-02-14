@@ -1183,50 +1183,50 @@
 
 		zone@0 {
 			reg = <0>;
-			qcom,silver-khz = <1785600>;
-			qcom,gold-khz = <2419200>;
+			qcom,silver-khz = <1708800>;
+			qcom,gold-khz = <2323200>;
 			qcom,prime-khz = <2841600>;
-			qcom,trip-deg = <55000>;
+			qcom,trip-deg = <65000>;
 		};
 
 		zone@1 {
 			reg = <1>;
-			qcom,silver-khz = <1785600>;
+			qcom,silver-khz = <1708800>;
 			qcom,gold-khz = <2323200>;
-			qcom,prime-khz = <2841600>;
-			qcom,trip-deg = <62000>;
+			qcom,prime-khz = <2534400>;
+			qcom,trip-deg = <68000>;
 		};
 
 		zone@2 {
 			reg = <2>;
-			qcom,silver-khz = <1785600>;
-			qcom,gold-khz = <2227200>;
-			qcom,prime-khz = <2649600>;
-			qcom,trip-deg = <65500>;
+			qcom,silver-khz = <1708800>;
+			qcom,gold-khz = <2016000>;
+			qcom,prime-khz = <2534400>;
+			qcom,trip-deg = <71000>;
 		};
 
 		zone@3 {
 			reg = <3>;
 			qcom,silver-khz = <1708800>;
 			qcom,gold-khz = <2016000>;
-			qcom,prime-khz = <2419200>;
-			qcom,trip-deg = <68500>;
+			qcom,prime-khz = <2534400>;
+			qcom,trip-deg = <73000>;
 		};
 
 		zone@4 {
 			reg = <4>;
-			qcom,silver-khz = <1632000>;
-			qcom,gold-khz = <1920000>;
+			qcom,silver-khz = <1708800>;
+			qcom,gold-khz = <1804800>;
 			qcom,prime-khz = <2227200>;
-			qcom,trip-deg = <72000>;
+			qcom,trip-deg = <74000>;
 		};
 
 		zone@5 {
 			reg = <5>;
-			qcom,silver-khz = <1632000>;
+			qcom,silver-khz = <1708800>;
 			qcom,gold-khz = <1804800>;
-			qcom,prime-khz = <2016000>;
-			qcom,trip-deg = <74000>;
+			qcom,prime-khz = <1804800>;
+			qcom,trip-deg = <75000>;
 		};
 
 		zone@6 {
@@ -1242,7 +1242,7 @@
 			qcom,silver-khz = <1708800>;
 			qcom,gold-khz = <1804800>;
 			qcom,prime-khz = <1804800>;
-			qcom,trip-deg = <78000>;
+			qcom,trip-deg = <77000>;
 		};
 
 		zone@8 {
@@ -1250,7 +1250,7 @@
 			qcom,silver-khz = <1708800>;
 			qcom,gold-khz = <1401600>;
 			qcom,prime-khz = <1804800>;
-			qcom,trip-deg = <80000>;
+			qcom,trip-deg = <78000>;
 		};
 
 		zone@9 {
@@ -1258,7 +1258,7 @@
 			qcom,silver-khz = <1708800>;
 			qcom,gold-khz = <1401600>;
 			qcom,prime-khz = <1804800>;
-			qcom,trip-deg = <82000>;
+			qcom,trip-deg = <80000>;
 		};
 
 		zone@10 {
