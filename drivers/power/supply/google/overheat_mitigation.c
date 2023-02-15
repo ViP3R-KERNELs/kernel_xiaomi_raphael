@@ -45,7 +45,6 @@ struct overheat_info {
 	struct wakeup_source	   overheat_ws;
 
 	bool usb_connected;
-	bool usb_online;
 	bool accessory_connected;
 	bool usb_replug;
 	bool overheat_mitigation;
@@ -228,22 +227,7 @@ static int update_usb_status(struct overheat_info *ovh_info)
 	}
 
 	dev_dbg(ovh_info->dev, "Updating USB connected status\n");
-	/*
-	 * Update USB online status so that port_overheat_work can check it
-	 * before rescheduling.
-	 */
 	ret = PSY_GET_PROP(ovh_info->usb_psy, POWER_SUPPLY_PROP_ONLINE);
-	if (ret < 0)
-		return ret;
-	ovh_info->usb_online = ret;
-
-	/*
-	 * Update USB present status to determine if USB has been disconnected.
-	 * If we use USB online status to determine replug, we will need to
-	 * extend the delay between re-enabling CC detection and checking the
-	 * USB online status.
-	 */
-	ret = PSY_GET_PROP(ovh_info->usb_psy, POWER_SUPPLY_PROP_PRESENT);
 	if (ret < 0)
 		return ret;
 	ovh_info->usb_connected = ret;
@@ -263,7 +247,7 @@ static int update_usb_status(struct overheat_info *ovh_info)
 			   USB_OVERHEAT_MITIGATION_VOTER, true, 0);
 		if (ret < 0) {
 			dev_err(ovh_info->dev,
-				"Couldn't vote for disable_power_role_switch ret=%d\n",
+				"Couldn't un-vote for disable_power_role_switch ret=%d\n",
 				ret);
 			return ret;
 		}
@@ -371,10 +355,10 @@ static void port_overheat_work(struct work_struct *work)
 		goto rerun;
 	}
 
-	if (ovh_info->overheat_mitigation || ovh_info->usb_online ||
+	if (ovh_info->overheat_mitigation || ovh_info->usb_connected ||
 	    should_check_accessory(ovh_info))
 		goto rerun;
-	// Do not run again, USB port isn't overheated or registering as online
+	// Do not run again, USB port isn't overheated or connected to something
 	ovh_info->overheat_work_running = false;
 	__pm_relax(&ovh_info->overheat_ws);
 	return;
@@ -419,7 +403,6 @@ static int ovh_probe(struct platform_device *pdev)
 	ovh_info->usb_psy = usb_psy;
 	ovh_info->overheat_mitigation = false;
 	ovh_info->usb_replug = false;
-	ovh_info->usb_online = false;
 	ovh_info->usb_connected = false;
 	ovh_info->overheat_work_running = false;
 
