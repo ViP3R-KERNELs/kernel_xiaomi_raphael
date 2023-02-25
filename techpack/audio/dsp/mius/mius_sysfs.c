@@ -3,37 +3,37 @@
 #include <linux/device.h>
 #include <linux/uaccess.h>
 #include <linux/module.h>
-#include <elliptic/elliptic_device.h>
-#include <elliptic/elliptic_sysfs.h>
-#include "elliptic_version.h"
-#include <elliptic/elliptic_mixer_controls.h>
+#include <mius/mius_device.h>
+#include <mius/mius_sysfs.h>
+#include "mius_version.h"
+#include <mius/mius_mixer_controls.h>
 
 
-#define ELLIPTIC_DIAGNOSTICS_DATA_SECTION_COUNT 16
-#define ELLIPTIC_CALIBRATION_MAX_DISPLAY_COUNT  96
-#define ELLIPTIC_ML_DISPLAY_COUNT 16
+#define MIUS_DIAGNOSTICS_DATA_SECTION_COUNT 16
+#define MIUS_CALIBRATION_MAX_DISPLAY_COUNT  96
+#define MIUS_ML_DISPLAY_COUNT 16
 
 static int kobject_create_and_add_failed;
 static int sysfs_create_group_failed;
 
-extern struct elliptic_system_configuration_parameters_cache
-	elliptic_system_configuration_cache;
+extern struct mius_system_configuration_parameters_cache
+	mius_system_configuration_cache;
 
 static ssize_t calibration_store(struct device *dev,
 	struct device_attribute *attr, const char *buf, size_t count) {
 
 	ssize_t result;
 
-	struct elliptic_shared_data_block *calibration_obj =
-		elliptic_get_shared_obj(ELLIPTIC_OBJ_ID_CALIBRATION_DATA);
+	struct mius_shared_data_block *calibration_obj =
+		mius_get_shared_obj(MIUS_OBJ_ID_CALIBRATION_DATA);
 
 	if (calibration_obj == NULL) {
-		EL_PRINT_E("calibration_obj is NULL");
+		MI_PRINT_E("calibration_obj is NULL");
 		return -EINVAL;
 	}
 
 	if (count > calibration_obj->size) {
-		EL_PRINT_E("write length %zu larger than buffer", count);
+		MI_PRINT_E("write length %zu larger than buffer", count);
 		return 0;
 	}
 
@@ -47,16 +47,16 @@ static ssize_t calibration_v2_store(struct device *dev,
 
 	ssize_t result;
 
-	struct elliptic_shared_data_block *calibration_obj =
-		elliptic_get_shared_obj(ELLIPTIC_OBJ_ID_CALIBRATION_V2_DATA);
+	struct mius_shared_data_block *calibration_obj =
+		mius_get_shared_obj(MIUS_OBJ_ID_CALIBRATION_V2_DATA);
 
 	if (calibration_obj == NULL) {
-		EL_PRINT_E("calibration_obj is NULL");
+		MI_PRINT_E("calibration_obj is NULL");
 		return -EINVAL;
 	}
 
 	if (count > calibration_obj->size) {
-		EL_PRINT_E("write length %zu larger than buffer", count);
+		MI_PRINT_E("write length %zu larger than buffer", count);
 		return 0;
 	}
 
@@ -70,16 +70,16 @@ static ssize_t diagnostics_store(struct device *dev,
 
 	ssize_t result;
 
-	struct elliptic_shared_data_block *diagnostics_obj =
-		elliptic_get_shared_obj(ELLIPTIC_OBJ_ID_DIAGNOSTICS_DATA);
+	struct mius_shared_data_block *diagnostics_obj =
+		mius_get_shared_obj(MIUS_OBJ_ID_DIAGNOSTICS_DATA);
 
 	if (diagnostics_obj == NULL) {
-		EL_PRINT_E("diagnostics_obj is NULL");
+		MI_PRINT_E("diagnostics_obj is NULL");
 		return -EINVAL;
 	}
 
 	if (count > diagnostics_obj->size) {
-		EL_PRINT_E("write length %zu larger than buffer", count);
+		MI_PRINT_E("write length %zu larger than buffer", count);
 		return 0;
 	}
 
@@ -93,16 +93,16 @@ static ssize_t ml_store(struct device *dev,
 
 	ssize_t result;
 
-	struct elliptic_shared_data_block *ml_obj =
-		elliptic_get_shared_obj(ELLIPTIC_OBJ_ID_ML_DATA);
+	struct mius_shared_data_block *ml_obj =
+		mius_get_shared_obj(MIUS_OBJ_ID_ML_DATA);
 
 	if (ml_obj == NULL) {
-		EL_PRINT_E("ml_obj is NULL");
+		MI_PRINT_E("ml_obj is NULL");
 		return -EINVAL;
 	}
 
 	if (count > ml_obj->size) {
-		EL_PRINT_E("write length %zu larger than buffer", count);
+		MI_PRINT_E("write length %zu larger than buffer", count);
 		return 0;
 	}
 
@@ -119,22 +119,22 @@ static ssize_t calibration_show_core(struct device *dev,
 	int i;
 	uint8_t *caldata;
 
-	struct elliptic_shared_data_block *calibration_obj =
-		elliptic_get_shared_obj(ELLIPTIC_OBJ_ID_CALIBRATION_DATA);
+	struct mius_shared_data_block *calibration_obj =
+		mius_get_shared_obj(MIUS_OBJ_ID_CALIBRATION_DATA);
 
 	if (kobject_create_and_add_failed)
-		EL_PRINT_E("kobject_create_and_add_failed");
+		MI_PRINT_E("kobject_create_and_add_failed");
 
 	if (sysfs_create_group_failed)
-		EL_PRINT_E("sysfs_create_group_failed");
+		MI_PRINT_E("sysfs_create_group_failed");
 
 	if (calibration_obj == NULL) {
-		EL_PRINT_E("calibration_obj is NULL");
+		MI_PRINT_E("calibration_obj is NULL");
 		return -EINVAL;
 	}
 
 	if (calibration_obj->size > PAGE_SIZE) {
-		EL_PRINT_E("calibration_obj->size > PAGE_SIZE");
+		MI_PRINT_E("calibration_obj->size > PAGE_SIZE");
 		return -EINVAL;
 	}
 
@@ -176,22 +176,22 @@ static ssize_t calibration_v2_show_core(struct device *dev,
 	int i;
 	uint8_t *caldata;
 
-	struct elliptic_shared_data_block *calibration_obj =
-		elliptic_get_shared_obj(ELLIPTIC_OBJ_ID_CALIBRATION_V2_DATA);
+	struct mius_shared_data_block *calibration_obj =
+		mius_get_shared_obj(MIUS_OBJ_ID_CALIBRATION_V2_DATA);
 
 	if (kobject_create_and_add_failed)
-		EL_PRINT_E("kobject_create_and_add_failed");
+		MI_PRINT_E("kobject_create_and_add_failed");
 
 	if (sysfs_create_group_failed)
-		EL_PRINT_E("sysfs_create_group_failed");
+		MI_PRINT_E("sysfs_create_group_failed");
 
 	if (calibration_obj == NULL) {
-		EL_PRINT_E("calibration_obj is NULL");
+		MI_PRINT_E("calibration_obj is NULL");
 		return -EINVAL;
 	}
 
 	if (calibration_obj->size > PAGE_SIZE) {
-		EL_PRINT_E("calibration_obj->size > PAGE_SIZE");
+		MI_PRINT_E("calibration_obj->size > PAGE_SIZE");
 		return -EINVAL;
 	}
 
@@ -203,16 +203,16 @@ static ssize_t calibration_v2_show_core(struct device *dev,
 			length += snprintf(buf + length, PAGE_SIZE - length,
 								"Calibration Ext Data: not loaded");
 		} else {
-			int j = (ELLIPTIC_CALIBRATION_V2_DATA_SIZE>>2) - 1;
+			int j = (MIUS_CALIBRATION_V2_DATA_SIZE>>2) - 1;
 
 			length += snprintf(buf + length, PAGE_SIZE - length,
 								"Calibration Ext Data: ");
-			for (i = 0; i < ELLIPTIC_CALIBRATION_MAX_DISPLAY_COUNT; ++i)
+			for (i = 0; i < MIUS_CALIBRATION_MAX_DISPLAY_COUNT; ++i)
 				length += snprintf(buf + length, PAGE_SIZE - length,
 								"0x%02x ", caldata[i]);
 			length += snprintf(buf + length, PAGE_SIZE - length,
 								"\nTruncated at %d",
-								ELLIPTIC_CALIBRATION_MAX_DISPLAY_COUNT);
+								MIUS_CALIBRATION_MAX_DISPLAY_COUNT);
 			length += snprintf(buf + length, PAGE_SIZE - length,
 						"\nmisc: %u %u %u %u %u %u %u %u\n",
 						caldata[j-7], caldata[j-6], caldata[j-5],
@@ -243,22 +243,22 @@ static ssize_t diagnostics_show_core(struct device *dev,
 	uint32_t *data32;
 	int i;
 
-	struct elliptic_shared_data_block *diagnostics_obj =
-		elliptic_get_shared_obj(ELLIPTIC_OBJ_ID_DIAGNOSTICS_DATA);
+	struct mius_shared_data_block *diagnostics_obj =
+		mius_get_shared_obj(MIUS_OBJ_ID_DIAGNOSTICS_DATA);
 
 	if (kobject_create_and_add_failed)
-		EL_PRINT_E("kobject_create_and_add_failed");
+		MI_PRINT_E("kobject_create_and_add_failed");
 
 	if (sysfs_create_group_failed)
-		EL_PRINT_E("sysfs_create_group_failed");
+		MI_PRINT_E("sysfs_create_group_failed");
 
 	if (diagnostics_obj == NULL) {
-		EL_PRINT_E("diagnostics_obj is NULL");
+		MI_PRINT_E("diagnostics_obj is NULL");
 		return -EINVAL;
 	}
 
 	if (diagnostics_obj->size > PAGE_SIZE) {
-		EL_PRINT_E("diagnostics_obj->size > PAGE_SIZE");
+		MI_PRINT_E("diagnostics_obj->size > PAGE_SIZE");
 		return -EINVAL;
 	}
 
@@ -268,7 +268,7 @@ static ssize_t diagnostics_show_core(struct device *dev,
 	if (pretty) {
 		length += snprintf(buf + length, PAGE_SIZE - length,
 							"Diagnostics:\n  counters:\n");
-		for (i = 0; i < ELLIPTIC_DIAGNOSTICS_DATA_SECTION_COUNT; i++)
+		for (i = 0; i < MIUS_DIAGNOSTICS_DATA_SECTION_COUNT; i++)
 			length += snprintf(buf + length, PAGE_SIZE - length, "   %u %u %u %u\n",
 				data32[4*i], data32[4*i+1], data32[4*i+2], data32[4*i+3]);
 	} else {
@@ -295,22 +295,22 @@ static ssize_t ml_show_core(struct device *dev,
 	int i;
 	uint32_t *mldata;
 
-	struct elliptic_shared_data_block *ml_obj =
-		elliptic_get_shared_obj(ELLIPTIC_OBJ_ID_ML_DATA);
+	struct mius_shared_data_block *ml_obj =
+		mius_get_shared_obj(MIUS_OBJ_ID_ML_DATA);
 
 	if (kobject_create_and_add_failed)
-		EL_PRINT_E("kobject_create_and_add_failed");
+		MI_PRINT_E("kobject_create_and_add_failed");
 
 	if (sysfs_create_group_failed)
-		EL_PRINT_E("sysfs_create_group_failed");
+		MI_PRINT_E("sysfs_create_group_failed");
 
 	if (ml_obj == NULL) {
-		EL_PRINT_E("ml_obj is NULL");
+		MI_PRINT_E("ml_obj is NULL");
 		return -EINVAL;
 	}
 
 	if (ml_obj->size > PAGE_SIZE) {
-		EL_PRINT_E("ml_obj->size > PAGE_SIZE");
+		MI_PRINT_E("ml_obj->size > PAGE_SIZE");
 		return -EINVAL;
 	}
 
@@ -324,12 +324,12 @@ static ssize_t ml_show_core(struct device *dev,
 		} else {
 			length += snprintf(buf + length, PAGE_SIZE - length,
 								"ML Data: ");
-			for (i = 0; i < ELLIPTIC_ML_DISPLAY_COUNT; ++i)
+			for (i = 0; i < MIUS_ML_DISPLAY_COUNT; ++i)
 				length += snprintf(buf + length, PAGE_SIZE - length,
 								"0x%08x ", mldata[i]);
 			length += snprintf(buf + length, PAGE_SIZE - length,
 								"\nTruncated at %d",
-								ELLIPTIC_ML_DISPLAY_COUNT);
+								MIUS_ML_DISPLAY_COUNT);
 		}
 	} else {
 		int values =  ml_obj->size >> 2;
@@ -354,29 +354,29 @@ static ssize_t version_show_core(struct device *dev,
 	struct device_attribute *attr, char *buf, int pretty)
 {
 	ssize_t result;
-	struct elliptic_engine_version_info *version_info;
+	struct mius_engine_version_info *version_info;
 	int length;
 
-	struct elliptic_shared_data_block *version_obj =
-		elliptic_get_shared_obj(ELLIPTIC_OBJ_ID_VERSION_INFO);
+	struct mius_shared_data_block *version_obj =
+		mius_get_shared_obj(MIUS_OBJ_ID_VERSION_INFO);
 
 	if (kobject_create_and_add_failed)
-		EL_PRINT_E("kobject_create_and_add_failed");
+		MI_PRINT_E("kobject_create_and_add_failed");
 
 	if (sysfs_create_group_failed)
-		EL_PRINT_E("sysfs_create_group_failed");
+		MI_PRINT_E("sysfs_create_group_failed");
 
 	if (version_obj == NULL) {
-		EL_PRINT_E("version_obj is NULL");
+		MI_PRINT_E("version_obj is NULL");
 		return -EINVAL;
 	}
 
 	if (version_obj->size > PAGE_SIZE) {
-		EL_PRINT_E("version_obj->size > PAGE_SIZE");
+		MI_PRINT_E("version_obj->size > PAGE_SIZE");
 		return -EINVAL;
 	}
 
-	version_info = (struct elliptic_engine_version_info *)
+	version_info = (struct mius_engine_version_info *)
 		version_obj->buffer;
 
 	if (pretty) {
@@ -409,16 +409,16 @@ static ssize_t branch_show_core(struct device *dev,
 {
 	int length;
 
-	struct elliptic_shared_data_block *branch_obj =
-		elliptic_get_shared_obj(ELLIPTIC_OBJ_ID_BRANCH_INFO);
+	struct mius_shared_data_block *branch_obj =
+		mius_get_shared_obj(MIUS_OBJ_ID_BRANCH_INFO);
 
 	if (branch_obj == NULL) {
-		EL_PRINT_E("branch_obj not found");
+		MI_PRINT_E("branch_obj not found");
 		return 0;
 	}
 
 	if (branch_obj->size > PAGE_SIZE) {
-		EL_PRINT_E("branch_obj->size > PAGE_SIZE");
+		MI_PRINT_E("branch_obj->size > PAGE_SIZE");
 		return -EINVAL;
 	}
 	if (pretty) {
@@ -443,16 +443,16 @@ static ssize_t tag_show_core(struct device *dev,
 {
 	int length;
 
-	struct elliptic_shared_data_block *tag_obj =
-		elliptic_get_shared_obj(ELLIPTIC_OBJ_ID_TAG_INFO);
+	struct mius_shared_data_block *tag_obj =
+		mius_get_shared_obj(MIUS_OBJ_ID_TAG_INFO);
 
 	if (tag_obj == NULL) {
-		EL_PRINT_E("tag_obj not found");
+		MI_PRINT_E("tag_obj not found");
 		return 0;
 	}
 
 	if (tag_obj->size > PAGE_SIZE) {
-		EL_PRINT_E("tag_obj->size > PAGE_SIZE");
+		MI_PRINT_E("tag_obj->size > PAGE_SIZE");
 		return -EINVAL;
 	}
 	if (pretty) {
@@ -474,8 +474,8 @@ static ssize_t tag_show(struct device *dev,
 
 static ssize_t cache_show(char *buf, int pretty)
 {
-	struct elliptic_system_configuration_parameters_cache *cache =
-				&elliptic_system_configuration_cache;
+	struct mius_system_configuration_parameters_cache *cache =
+				&mius_system_configuration_cache;
 
 	int length;
 
@@ -506,8 +506,8 @@ static ssize_t opmode_show(struct device *dev,
 	int length;
 	ssize_t result;
 
-	struct elliptic_system_configuration_parameters_cache *cache =
-				&elliptic_system_configuration_cache;
+	struct mius_system_configuration_parameters_cache *cache =
+				&mius_system_configuration_cache;
 
 	length += snprintf(buf + length, PAGE_SIZE - 1, "%d\n",
 							cache->operation_mode);
@@ -520,8 +520,8 @@ static ssize_t opmode_flags_show(struct device *dev,
 {
 	int length;
 	ssize_t result;
-	struct elliptic_system_configuration_parameters_cache *cache =
-				&elliptic_system_configuration_cache;
+	struct mius_system_configuration_parameters_cache *cache =
+				&mius_system_configuration_cache;
 
 	length += snprintf(buf + length, PAGE_SIZE - 1, "%d\n",
 							cache->operation_mode_flags);
@@ -583,7 +583,7 @@ static struct device_attribute ml_attr = __ATTR_RW(ml);
 static struct device_attribute opmode_attr = __ATTR_RO(opmode);
 static struct device_attribute opmode_flags_attr = __ATTR_RO(opmode_flags);
 
-static struct attribute *elliptic_attrs[] = {
+static struct attribute *mius_attrs[] = {
 	&calibration_attr.attr,
 	&version_attr.attr,
 	&branch_attr.attr,
@@ -597,39 +597,39 @@ static struct attribute *elliptic_attrs[] = {
 	NULL,
 };
 
-static struct attribute_group elliptic_attr_group = {
-	.name = ELLIPTIC_SYSFS_ENGINE_FOLDER,
-	.attrs = elliptic_attrs,
+static struct attribute_group mius_attr_group = {
+	.name = MIUS_SYSFS_ENGINE_FOLDER,
+	.attrs = mius_attrs,
 };
 
-static struct kobject *elliptic_sysfs_kobj;
+static struct kobject *mius_sysfs_kobj;
 
-int elliptic_initialize_sysfs(void)
+int mius_initialize_sysfs(void)
 {
 	int err;
 
-	elliptic_sysfs_kobj = kobject_create_and_add(ELLIPTIC_SYSFS_ROOT_FOLDER,
+	mius_sysfs_kobj = kobject_create_and_add(MIUS_SYSFS_ROOT_FOLDER,
 		kernel_kobj->parent);
 
-	if (!elliptic_sysfs_kobj) {
+	if (!mius_sysfs_kobj) {
 		kobject_create_and_add_failed = 1;
-		EL_PRINT_E("failed to create kobj");
+		MI_PRINT_E("failed to create kobj");
 		return -ENOMEM;
 	}
 
-	err = sysfs_create_group(elliptic_sysfs_kobj, &elliptic_attr_group);
+	err = sysfs_create_group(mius_sysfs_kobj, &mius_attr_group);
 
 	if (err) {
 		sysfs_create_group_failed = 1;
-		EL_PRINT_E("failed to create sysfs group");
-		kobject_put(elliptic_sysfs_kobj);
+		MI_PRINT_E("failed to create sysfs group");
+		kobject_put(mius_sysfs_kobj);
 		return -ENOMEM;
 	}
 
 	return 0;
 }
 
-void elliptic_cleanup_sysfs(void)
+void mius_cleanup_sysfs(void)
 {
-	kobject_put(elliptic_sysfs_kobj);
+	kobject_put(mius_sysfs_kobj);
 }
