@@ -187,7 +187,7 @@ static inline bool use_pelt(void)
 static inline bool conservative_pl(void)
 {
 #ifdef CONFIG_SCHED_WALT
-	return false;
+	return sysctl_sched_conservative_pl;
 #else
 	return false;
 #endif
@@ -454,7 +454,7 @@ static inline bool sugov_cpu_is_busy(struct sugov_cpu *sg_cpu) { return false; }
 #define DEFAULT_HISPEED_LOAD_LP 90
 #define DEFAULT_HISPEED_LOAD_HP 90
 #define DEFAULT_HISPEED_LOAD_PR 90
-#define DEFAULT_CPU0_RTG_BOOST_FREQ 0
+#define DEFAULT_CPU0_RTG_BOOST_FREQ 1612800
 #define DEFAULT_CPU4_RTG_BOOST_FREQ 0
 #define DEFAULT_CPU7_RTG_BOOST_FREQ 0
 static void sugov_walt_adjust(struct sugov_cpu *sg_cpu, unsigned long *util,
