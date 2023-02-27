@@ -39,7 +39,7 @@ static void devfreq_input_unboost(struct work_struct *work);
 static void devfreq_max_unboost(struct work_struct *work);
 
 static unsigned long devfreq_boost_freq =
-	CONFIG_DEVFREQ_CPU_LLCC_DDR_BW_BOOST_FREQ;
+	CONFIG_DEVFREQ_MSM_LLCCBW_BOOST_FREQ | CONFIG_DEVFREQ_MSM_CPUBW_BOOST_FREQ;
 static unsigned long devfreq_boost_freq_performance =
 	CONFIG_DEVFREQ_CPU_LLCC_DDR_BW_BOOST_FREQ_PERFORMANCE_MODE;
 static unsigned short devfreq_boost_dur =
