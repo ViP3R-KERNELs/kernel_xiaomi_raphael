@@ -66,6 +66,8 @@
 #include <linux/kthread.h>
 #include <linux/memcontrol.h>
 #include <linux/show_mem_notifier.h>
+#include <linux/cpu_input_boost.h>
+#include <linux/devfreq_boost.h>
 #include <linux/ftrace.h>
 #include <linux/lockdep.h>
 #include <linux/nmi.h>
@@ -4130,6 +4132,7 @@ check_retry_cpuset(int cpuset_mems_cookie, struct alloc_context *ac)
 	return false;
 }
 
+extern int kp_active_mode(void);
 static inline struct page *
 __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
 						struct alloc_context *ac)
@@ -4254,6 +4257,13 @@ retry:
 	/* Ensure kswapd doesn't accidentally go to sleep as long as we loop */
 	if (gfp_mask & __GFP_KSWAPD_RECLAIM)
 		wake_all_kswapds(order, ac);
+
+	/* Boost when memory is low so allocation latency doesn't get too bad */
+	if (kp_active_mode() == 2 || kp_active_mode() == 0) {
+		devfreq_boost_kick_max(DEVFREQ_CPU_LLCC_DDR_BW, 50);
+	} else if (kp_active_mode() == 3) {
+		devfreq_boost_kick_max(DEVFREQ_CPU_LLCC_DDR_BW, 100);
+	}
 
 	reserve_flags = __gfp_pfmemalloc_flags(gfp_mask);
 	if (reserve_flags)
