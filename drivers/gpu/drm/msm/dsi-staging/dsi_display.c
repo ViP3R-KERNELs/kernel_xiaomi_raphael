@@ -5249,7 +5249,11 @@ static int dsi_display_bind(struct device *dev,
 		goto error;
 	}
 
-	dsi_display_debugfs_init(display);
+	rc = dsi_display_debugfs_init(display);
+	if (rc) {
+		pr_err("[%s] debugfs init failed, rc=%d\n", display->name, rc);
+		goto error;
+	}
 
 	atomic_set(&display->clkrate_change_pending, 0);
 	display->cached_clk_rate = 0;
