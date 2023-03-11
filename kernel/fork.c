@@ -2262,7 +2262,11 @@ long _do_fork(unsigned long clone_flags,
 			cpu_input_boost_kick_max(50);
 			devfreq_boost_kick_max(DEVFREQ_MSM_CPUBW, 700);
 			devfreq_boost_kick_max(DEVFREQ_MSM_LLCCBW, 700);
-		}
+		} else if (kp_active_mode() == 1) {
+                        cpu_input_boost_kick_max(25);
+                        devfreq_boost_kick_max(DEVFREQ_MSM_CPUBW, 25);
+                        devfreq_boost_kick_max(DEVFREQ_MSM_LLCCBW, 25);
+                }
 	}
 
 	/*
