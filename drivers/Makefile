@@ -194,4 +194,3 @@ obj-$(CONFIG_TRUSTY)		+= trusty/
 obj-$(CONFIG_GNSS_SIRF)		+= gnsssirf/
 obj-$(CONFIG_GNSS)		+= gnss/
 
-obj-y                           += kernelsu/
